@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Ton Miner</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0a0e1a;color:#fff;overflow:hidden}
+#app{width:100vw;height:100vh;display:flex;flex-direction:column}
+#header{padding:12px;display:flex;justify-content:space-between}
+.box{background:#1a233d;border:1.5px solid #2a3a66;border-radius:12px;padding:8px 14px;font-size:13px;min-width:110px}
+.box b{color:#5ee1ff;display:block;font-size:16px}
+#pages{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;inset:0;padding:15px;overflow-y:auto;display:none}
+.page.active{display:block}
+
+/* MINE PAGE */
+#minePage{text-align:center}
+#mineCircle{width:220px;height:220px;margin:35px auto;background:radial-gradient(circle at 30% 30%,#4a5a7a,#1e2a45 60%,#0f172a);border:6px solid #2a3a66;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(94,225,255,0.2), inset 0 0 30px rgba(0,0,0,0.5);position:relative;cursor:pointer}
+#mineCircle:active{transform:scale(0.96)}
+#mineCircle::after{content:"⛏️";font-size:90px}
+#rocky{position:absolute;bottom:20px;font-size:28px;letter-spacing:5px}
+#mineBtn{margin-top:20px;background:linear-gradient(#5ee1ff,#3a9bff);color:#000;border:none;padding:14px 45px;border-radius:30px;font-weight:900;font-size:18px}
+#claimBtn{margin-top:12px;background:#1a233d;border:1px solid #5ee1ff;color:#5ee1ff;padding:10px 30px;border-radius:20px}
+
+/* TASK PAGE */
+.task{background:#141d35;border:1px solid #253356;border-radius:14px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.taskLeft{display:flex;gap:12px;align-items:center}
+.taskIcon{width:42px;height:42px;background:#1f2d4d;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.taskBtn{background:#5ee1ff;color:#000;border:none;padding:8px 16px;border-radius:20px;font-weight:700;font-size:13px}
+
+/* WALLET */
+.walletCard{background:linear-gradient(135deg,#1a233d,#253a66);border-radius:18px;padding:20px;text-align:center;margin-bottom:15px;border:1px solid #2a3a66}
+.bigBal{font-size:36px;font-weight:900;color:#5ee1ff}
+.wRow{display:flex;gap:12px;margin-top:15px}
+.wBtn{flex:1;padding:14px;border-radius:12px;border:none;font-weight:800}
+.deposit{background:#5ee1ff;color:#000}
+.withdraw{background:#1a233d;border:1px solid #5ee1ff;color:#5ee1ff}
+
+/* REFER */
+.refBox{background:#141d35;border:1px dashed #5ee1ff;border-radius:12px;padding:15px;word-break:break-all;font-size:13px;margin:15px 0}
+#nav{height:72px;background:#0f172a;border-top:1px solid #1e2d4d;display:flex}
+.nItem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#6b7a9a;font-size:11px}
+.nItem.active{color:#5ee1ff}
+.nIcon{font-size:22px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="header">
+<div class="box">Unclaimed <b id="pending">0.000 TON</b></div>
+<div class="box" style="text-align:right">Mines Left <b id="minesLeft">10/10</b></div>
+</div>
+
+<div id="pages">
+<!-- MINE -->
+<div class="page active" id="mine">
+<div id="mineCircle" onclick="doMine()"><div id="rocky">🪨🪨🪨</div></div>
+<p id="rateText">Mining: 0.10 TON per tap</p>
+<button id="mineBtn" onclick="doMine()">⛏️ MINE</button><br>
+<button id="claimBtn" onclick="claim()">CLAIM TO WALLET</button>
+<p style="margin-top:15px;color:#6b7a9a;font-size:12px">Tap the circle to mine. Deposit $2 to increase rate.</p>
+</div>
+
+<!-- TASK -->
+<div class="page" id="task">
+<h3 style="margin-bottom:15px">📋 Tasks</h3>
+<div class="task"><div class="taskLeft"><div class="taskIcon">📢</div><div><b>Follow our channel</b><br><small style="color:#6b7a9a">+0.2 TON</small></div></div><button class="taskBtn" onclick="doTask(this,'channel1')">Go</button></div>
+<div class="task"><div class="taskLeft"><div class="taskIcon">💎</div><div><b>Follow Ton Mine channel</b><br><small style="color:#6b7a9a">+0.2 TON</small></div></div><button class="taskBtn" onclick="doTask(this,'channel2')">Go</button></div>
+<div class="task"><div class="taskLeft"><div class="taskIcon">🚀</div><div><b>Open Ton Mine</b><br><small style="color:#6b7a9a">+0.1 TON</small></div></div><button class="taskBtn" onclick="doTask(this,'open')">Open</button></div>
+<div class="task"><div class="taskLeft"><div class="taskIcon">📺</div><div><b>Watch Ads to Refill Mines</b><br><small id="adTaskText">0/20</small></div></div><button class="taskBtn" onclick="watchRefill()">Watch</button></div>
+<div class="task"><div class="taskLeft"><div class="taskIcon">🎁</div><div><b>Bonus Ads to Receive TON</b><br><small id="bonusText">0/100</small></div></div><button class="taskBtn" onclick="watchBonus()">Watch</button></div>
+</div>
+
+<!-- WALLET -->
+<div class="page" id="wallet">
+<div class="walletCard">
+<small style="color:#8a9bbf">TOTAL BALANCE</small>
+<div class="bigBal" id="totalBal">0.000 TON</div>
+<small>≈ $<span id="usd">0.00</span></small>
+<div class="wRow"><button class="wBtn deposit" onclick="deposit()">DEPOSIT $2</button><button class="wBtn withdraw" onclick="withdraw()">WITHDRAW $20 MIN</button></div>
+</div>
+<p style="color:#6b7a9a;font-size:12px;text-align:center">Deposit $2 to increase mining to 0.15 TON per tap.<br>Withdrawal minimum is $20 (~3.5 TON)</p>
+</div>
+
+<!-- REFER -->
+<div class="page" id="refer">
+<h3>👥 Refer & Earn</h3>
+<p style="color:#8a9bbf;font-size:13px;margin-top:8px">Get 10% of your friend's mining!</p>
+<div class="refBox" id="refLink">https://t.me/TonMinerBot?start=12345</div>
+<button class="taskBtn" style="width:100%;padding:14px" onclick="copyRef()">COPY LINK</button>
+<div style="margin-top:20px" class="walletCard">
+<b>Wallet Connect</b><br><small style="color:#8a9bbf">Connect TON wallet for withdrawal</small><br>
+<button class="wBtn deposit" style="margin-top:12px;width:100%" onclick="connectWallet()">🔗 CONNECT WALLET</button>
+<p id="walletAddr" style="margin-top:10px;font-size:12px;color:#5ee1ff"></p>
+</div>
+</div>
+</div>
+
+<div id="nav">
+<div class="nItem active" onclick="showPage('mine',this)"><div class="nIcon">⛏️</div>Mine</div>
+<div class="nItem" onclick="showPage('task',this)"><div class="nIcon">📋</div>Task</div>
+<div class="nItem" onclick="showPage('wallet',this)"><div class="nIcon">💼</div>Wallet</div>
+<div class="nItem" onclick="showPage('refer',this)"><div class="nIcon">👥</div>Refer</div>
+</div>
+</div>
+
+<script>
+let mines = parseInt(localStorage.getItem('tm_mines')||10);
+let pending = parseFloat(localStorage.getItem('tm_pending')||0);
+let balance = parseFloat(localStorage.getItem('tm_bal')||0);
+let rate = parseFloat(localStorage.getItem('tm_rate')||0.10);
+let adRefill = parseInt(localStorage.getItem('tm_adRef')||0);
+let bonusAd = parseInt(localStorage.getItem('tm_bonus')||0);
+let adCtrl=null;
+
+function updateUI(){
+document.getElementById('minesLeft').innerText=mines+'/10';
+document.getElementById('pending').innerText=pending.toFixed(3)+' TON';
+document.getElementById('totalBal').innerText=balance.toFixed(3)+' TON';
+document.getElementById('usd').innerText=(balance*5.8).toFixed(2);
+document.getElementById('rateText').innerText='Mining: '+rate.toFixed(2)+' TON per tap';
+document.getElementById('adTaskText').innerText=adRefill+'/20';
+document.getElementById('bonusText').innerText=bonusAd+'/100';
+}
+function doMine(){
+if(mines<=0){alert('No mines left! Watch ad in Task page to refill.');return;}
+mines--;pending+=rate;save();updateUI();
+Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+}
+function claim(){
+if(pending<=0){alert('Nothing to claim');return;}
+balance+=pending;pending=0;save();updateUI();
+Telegram.WebApp.showAlert('Claimed to Wallet!');
+}
+function showPage(id,el){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id=='mine'?'mine':id=='task'?'task':id=='wallet'?'wallet':'refer').classList.add('active');
+document.querySelectorAll('.nItem').forEach(n=>n.classList.remove('active'));
+el.classList.add('active');
+}
+function doTask(btn,type){
+btn.innerText='Done';btn.style.background='#00ff88';
+if(type.includes('channel')){window.open('https://t.me/yourchannel','_blank'); balance+=0.2;}
+else{balance+=0.1;}
+save();updateUI();
+}
+function initAd(){try{adCtrl=window.Adsgram.init({blockId:"int-13588",debug:false});}catch(e){}}
+function watchRefill(){
+if(adCtrl){adCtrl.show().then(()=>{mines=Math.min(10,mines+1);adRefill=Math.min(20,adRefill+1);save();updateUI();}).catch(()=>{mines=Math.min(10,mines+1);adRefill=Math.min(20,adRefill+1);save();updateUI();});}
+else{mines=Math.min(10,mines+1);adRefill++;save();updateUI();}
+}
+function watchBonus(){
+if(adCtrl){adCtrl.show().then(()=>{balance+=0.05;bonusAd=Math.min(100,bonusAd+1);save();updateUI();}).catch(()=>{balance+=0.05;bonusAd++;save();updateUI();});}
+else{balance+=0.05;bonusAd++;save();updateUI();}
+}
+function deposit(){rate=0.15;localStorage.setItem('tm_rate',rate);updateUI();alert('Demo: Deposit $2 successful! Rate now 0.15 TON');}
+function withdraw(){if(balance*5.8<20){alert('Minimum $20 (3.45 TON) required');return;}alert('Withdrawal request: '+balance.toFixed(3)+' TON');}
+function copyRef(){navigator.clipboard.writeText(document.getElementById('refLink').innerText);alert('Copied!');}
+function connectWallet(){document.getElementById('walletAddr').innerText='Connected: UQ...'+Math.random().toString(36).substring(2,8); Telegram.WebApp.showAlert('Wallet Connected!');}
+function save(){localStorage.setItem('tm_mines',mines);localStorage.setItem('tm_pending',pending);localStorage.setItem('tm_bal',balance);localStorage.setItem('tm_adRef',adRefill);localStorage.setItem('tm_bonus',bonusAd);}
+Telegram.WebApp.ready();Telegram.WebApp.expand();
+initAd();updateUI();
+// set ref link from telegram user
+try{let uid=Telegram.WebApp.initDataUnsafe.user?.id||12345;document.getElementById('refLink').innerText='https://t.me/TonMiner_Bot?start='+uid;}catch(e){}
+</script>
+</div>
+</body>
+  </html>
