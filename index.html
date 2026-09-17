@@ -53,9 +53,9 @@
 
 <div id="taskPage" class="page">
   <h3 style="margin-bottom:12px">Tasks</h3>
-  <div class="task"><div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button></div>
-  <div class="task"><div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button></div>
-  <div class="task"><div class="task-left"><div class="icon">🚀</div><div><div class="t-title">Open Ton Mine</div><div class="t-sub">+0.02 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Open</button></div>
+  <div class="task"><div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/tonminer_bot1')">Go</button></div>
+  <div class="task"><div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/tonminer_bot1')">Go</button></div>
+  <div class="task"><div class="task-left"><div class="icon">🚀</div><div><div class="t-title">Open Ton Mine</div><div class="t-sub">+0.02 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/tonminer_bot1')">Open</button></div>
   <div class="task"><div class="task-left"><div class="icon">🎥</div><div><div class="t-title">Watch ads to refill mines</div><div class="t-sub" id="refillTxt">0/20 today</div></div></div><button class="t-btn" id="refillBtn" onclick="watchRefill()">Watch</button></div>
   <div class="task"><div class="task-left"><div class="icon">💰</div><div><div class="t-title">Bonus ads to receive TON</div><div class="t-sub" id="bonusTxt">0/100 - $0.05</div></div></div><button class="t-btn" id="watchBtn" onclick="watchAd()">Watch</button></div>
 </div>
@@ -87,12 +87,11 @@
 const tg = window.Telegram.WebApp; tg.expand();
 const userId = tg.initDataUnsafe?.user?.id || "test_user";
 document.getElementById("status").innerText = "User: " + userId;
-document.getElementById("refLink").innerText = `https://t.me/tonminer_bot1?start=${userId}`;
+document.getElementById("refLink").innerText = `https://t.me/tonminer123_bot?start=${userId}`;
 const AdController = window.Adsgram.init({ blockId: "48303" });
 let mines=10, unclaimed=0, power=0.1, wallet=0, refillDone=0, bonusDone=0;
 let connectedWalletAddress=null;
 
-// DEMO MANIFEST - WORKS EVERYWHERE
 const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
   manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json',
   buttonRootId: 'ton-connect'
