@@ -6,6 +6,7 @@
   <title>Ton Miner</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{background:#070d1c;color:#fff;font-family:system-ui,sans-serif;padding-bottom:85px}
@@ -14,108 +15,65 @@
     .pill span{color:#0098EA}
     .page{display:none;padding:14px}
     .page.active{display:block}
-    /* Mine */
-    .mine-circle{width:220px;height:220px;margin:26px auto;background:radial-gradient(at 30% 30%,#26407a,#0e1933);border:4px solid #0098EA;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 50px rgba(0,152,234,.35);cursor:pointer;transition:.1s}
+    .mine-circle{width:220px;height:220px;margin:26px auto;background:radial-gradient(at 30% 30%,#26407a,#0e1933);border:4px solid #0098EA;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 50px rgba(0,152,234,.35);cursor:pointer}
     .mine-circle:active{transform:scale(.95)}
     .balance-big{font-size:36px;color:#0098EA;text-align:center;font-weight:800}
     .sub{opacity:.6;text-align:center;font-size:13px;margin-top:4px}
     .btn{width:100%;background:#0098EA;color:#fff;border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;margin-top:14px;cursor:pointer}
-    .btn:disabled{background:#1a2747;color:#5a6a8a}
-    /* Task */
     .task{background:#111c33;border:1px solid #1e315f;border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
     .task-left{display:flex;gap:10px;align-items:center}
     .icon{width:36px;height:36px;background:#0d1730;border-radius:10px;display:flex;align-items:center;justify-content:center}
     .t-title{font-size:13px;font-weight:700}
     .t-sub{font-size:11px;color:#0098EA;margin-top:2px}
-    .t-btn{background:#0098EA;color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800;cursor:pointer}
-    /* Wallet */
+    .t-btn{background:#0098EA;color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:800}
     .wallet-card{background:linear-gradient(135deg,#0098EA,#48c0ff);border-radius:22px;padding:20px;text-align:center}
-    .wallet-card h1{font-size:40px}
-    /* Refer */
     .ref-box{background:#111c33;border:1px solid #1e315f;border-radius:16px;padding:16px;text-align:center}
     .ref-link{background:#0a1226;border:1px dashed #23406f;border-radius:10px;padding:10px;font-size:11px;color:#6aa8ff;word-break:break-all;margin:10px 0}
-    /* Nav */
     .nav{position:fixed;bottom:0;left:0;right:0;background:#0e1933;border-top:1px solid #1e315f;display:flex;justify-content:space-around;padding:8px 0}
-    .nav-item{text-align:center;font-size:10px;color:#5f7294;cursor:pointer;flex:1}
+    .nav-item{text-align:center;font-size:10px;color:#5f7294;flex:1}
     .nav-item.active{color:#0098EA}
     .nav-item b{font-size:20px;display:block}
     #status{font-size:11px;opacity:.7;margin-top:8px;text-align:center}
   </style>
 </head>
 <body>
-
 <div class="top">
-  <div class="pill">💎 <span id="unclaimed">0.00</span> TON unclaimed</div>
+  <div class="pill">💎 <span id="unclaimed">0.00</span> TON</div>
   <div class="pill">⛏️ <span id="minesLeft">10/10</span> left</div>
 </div>
 
-<!-- 1. MINE PAGE -->
 <div id="minePage" class="page active">
   <div class="mine-circle" onclick="doMine()">🪨</div>
   <div class="balance-big" id="minePower">0.10 TON</div>
-  <div class="sub">Tap rock to mine. 0.1 TON per mine</div>
+  <div class="sub">Tap to mine</div>
   <div id="balance" class="balance-big" style="font-size:28px;margin-top:18px">$0.00</div>
-  <div class="sub">Wallet Balance</div>
-  <button class="btn" onclick="claim()">⬆️ Claim to Wallet</button>
+  <button class="btn" onclick="claim()">Claim to Wallet</button>
   <p id="status">User: loading...</p>
 </div>
 
-<!-- 2. TASK PAGE -->
 <div id="taskPage" class="page">
   <h3 style="margin-bottom:12px">Tasks</h3>
-  
-  <div class="task">
-    <div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div>
-    <button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button>
-  </div>
-
-  <div class="task">
-    <div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div>
-    <button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button>
-  </div>
-
-  <div class="task">
-    <div class="task-left"><div class="icon">🚀</div><div><div class="t-title">Open Ton Mine</div><div class="t-sub">+0.02 TON</div></div></div>
-    <button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Open</button>
-  </div>
-
-  <div class="task">
-    <div class="task-left"><div class="icon">🎥</div><div><div class="t-title">Watch ads to refill mines</div><div class="t-sub" id="refillTxt">0/20 today</div></div></div>
-    <button class="t-btn" id="refillBtn" onclick="watchRefill()">Watch</button>
-  </div>
-
-  <div class="task">
-    <div class="task-left"><div class="icon">💰</div><div><div class="t-title">Bonus ads to receive TON</div><div class="t-sub" id="bonusTxt">0/100 - Earn $0.05 each</div></div></div>
-    <button class="t-btn" id="watchBtn" onclick="watchAd()">Watch</button>
-  </div>
+  <div class="task"><div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button></div>
+  <div class="task"><div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button></div>
+  <div class="task"><div class="task-left"><div class="icon">🚀</div><div><div class="t-title">Open Ton Mine</div><div class="t-sub">+0.02 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Open</button></div>
+  <div class="task"><div class="task-left"><div class="icon">🎥</div><div><div class="t-title">Watch ads to refill mines</div><div class="t-sub" id="refillTxt">0/20 today</div></div></div><button class="t-btn" id="refillBtn" onclick="watchRefill()">Watch</button></div>
+  <div class="task"><div class="task-left"><div class="icon">💰</div><div><div class="t-title">Bonus ads to receive TON</div><div class="t-sub" id="bonusTxt">0/100 - $0.05</div></div></div><button class="t-btn" id="watchBtn" onclick="watchAd()">Watch</button></div>
 </div>
 
-<!-- 3. WALLET PAGE -->
 <div id="walletPage" class="page">
-  <div class="wallet-card">
-    <div style="font-size:12px;opacity:.9">WALLET BALANCE</div>
-    <h1 id="walletBal">$0.00</h1>
-    <div style="font-size:12px" id="walletTon">0.00 TON</div>
+  <div class="wallet-card"><div>WALLET</div><h1 id="walletBal">$0.00</h1><div id="walletTon">0.00 TON</div></div>
+  <div id="ton-connect" style="margin:14px 0"></div>
+  <div id="connectedInfo" style="display:none;background:#111c33;border:1px solid #1e315f;border-radius:12px;padding:12px;text-align:center">
+    <div style="font-size:12px;opacity:.6">Connected Wallet</div>
+    <div id="walletAddr" style="font-size:11px;color:#0098EA;margin-top:4px;word-break:break-all"></div>
+    <button class="btn" style="background:#1a2747;padding:10px;font-size:13px" onclick="disconnectWallet()">Disconnect</button>
   </div>
   <button class="btn" style="background:#fff;color:#0098EA" onclick="deposit()">Deposit $2 - Boost to 0.15 TON</button>
-  <button class="btn" style="background:#1a2747" onclick="withdraw()">Withdraw - Min $20</button>
-  <div class="task" style="margin-top:12px;flex-direction:column;align-items:flex-start">
-    <div class="t-title">💡 Deposit Info</div>
-    <div class="t-sub">Min deposit $2 increases mining to 0.15 TON per tap. Permanent.</div>
-  </div>
+  <button class="btn" style="background:#1a2747" onclick="withdraw()">Withdraw Min $20</button>
 </div>
 
-<!-- 4. REFER PAGE -->
 <div id="referPage" class="page">
-  <div class="ref-box">
-    <div style="font-size:40px">👥</div>
-    <h3>Invite Friends</h3>
-    <div class="sub">Earn 10% from their mining</div>
-    <div class="ref-link" id="refLink">https://t.me/TonMinerBot?start=123</div>
-    <button class="btn" onclick="copyRef()">Copy Referral Link</button>
-    <button class="btn" style="background:#1a2747;margin-top:10px" onclick="connectWallet()">🔗 Connect TON Wallet</button>
-    <div id="walletAddr" class="sub" style="margin-top:10px"></div>
-  </div>
+  <div class="ref-box"><div style="font-size:40px">👥</div><h3>Invite</h3><div class="ref-link" id="refLink"></div><button class="btn" onclick="copyRef()">Copy Link</button></div>
 </div>
 
 <div class="nav">
@@ -129,67 +87,32 @@
 const tg = window.Telegram.WebApp; tg.expand();
 const userId = tg.initDataUnsafe?.user?.id || "test_user";
 document.getElementById("status").innerText = "User: " + userId;
-document.getElementById("refLink").innerText = `https://t.me/TonMinerBot?start=${userId}`;
+document.getElementById("refLink").innerText = `https://t.me/tonminer_bot1?start=${userId}`;
 const AdController = window.Adsgram.init({ blockId: "48303" });
+let mines=10, unclaimed=0, power=0.1, wallet=0, refillDone=0, bonusDone=0;
+let connectedWalletAddress=null;
 
-let mines = 10, unclaimed = 0, power = 0.1, wallet = 0, refillDone = 0, bonusDone = 0;
-
-function showPage(id, el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');
-}
-function doMine(){
-  if(mines<=0) return tg.showAlert("No mines left! Go to Task > Watch ads to refill 0/20");
-  mines--; unclaimed+=power; updateUI();
-}
-function updateUI(){
-  document.getElementById('minesLeft').innerText = `${mines}/10`;
-  document.getElementById('unclaimed').innerText = unclaimed.toFixed(2);
-  document.getElementById('minePower').innerText = `${power.toFixed(2)} TON`;
-  document.getElementById('refillTxt').innerText = `${refillDone}/20 today`;
-  document.getElementById('bonusTxt').innerText = `${bonusDone}/100 - Earn $0.05 each`;
-}
-function claim(){
-  if(unclaimed==0) return tg.showAlert("Mine first!");
-  wallet+=unclaimed; unclaimed=0;
-  document.getElementById('balance').innerText="$"+wallet.toFixed(2);
-  document.getElementById('walletBal').innerText="$"+wallet.toFixed(2);
-  document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON";
-  updateUI();
-  fetch(`https://cardio-backend.vercel.app/api/adsgram-reward?userId=${userId}&type=claim&amount=${wallet}`);
-}
-async function watchRefill(){
-  if(refillDone>=20) return tg.showAlert("Daily limit 20 reached");
-  const btn=document.getElementById('refillBtn'); btn.innerText="Loading...";
-  try{ const r=await AdController.show(); if(r.done){ mines=Math.min(10,mines+1); refillDone++; updateUI(); tg.showAlert("⛏️ +1 Mine!"); fetch(`https://cardio-backend.vercel.app/api/adsgram-reward?userId=${userId}&type=refill`); } }catch(e){ document.getElementById('status').innerText="No ad: "+JSON.stringify(e); }
-  btn.innerText="Watch";
-}
-async function watchAd(){
-  if(bonusDone>=100) return tg.showAlert("Daily limit 100 reached");
-  const btn=document.getElementById('watchBtn'); btn.disabled=true; btn.innerText="Loading...";
-  try{
-    const result=await AdController.show();
-    if(result.done){
-      document.getElementById('status').innerText="✅ Ad watched! Adding...";
-      bonusDone++; wallet+=0.05;
-      document.getElementById('balance').innerText="$"+wallet.toFixed(2);
-      document.getElementById('walletBal').innerText="$"+wallet.toFixed(2);
-      document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON";
-      updateUI();
-      // This will add for YOU in adsgram.ai dashboard + add $0.05 for user in Supabase
-      fetch(`https://cardio-backend.vercel.app/api/adsgram-reward?userId=${userId}`);
-      setTimeout(()=>{ document.getElementById('status').innerText="🎉 $0.05 added!"; btn.disabled=false; btn.innerText="Watch"; },1500);
-    }else{ document.getElementById('status').innerText="❌ You no finish ad"; btn.disabled=false; btn.innerText="Try Again"; }
-  }catch(e){ document.getElementById('status').innerText="Error: "+JSON.stringify(e); btn.disabled=false; btn.innerText="Watch"; }
-}
-function deposit(){ tg.showAlert("Deposit $2 TON to: YOUR_TON_WALLET\nAfter that your power = 0.15 TON per mine"); power=0.15; updateUI(); }
-function withdraw(){ if(wallet<20) return tg.showAlert(`Min $20. You have $${wallet.toFixed(2)}`); tg.showAlert("Withdraw request sent!"); }
+// DEMO MANIFEST - WORKS EVERYWHERE
+const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+  manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json',
+  buttonRootId: 'ton-connect'
+});
+tonConnectUI.onStatusChange(w=>{
+  if(w){ connectedWalletAddress=w.account.address; document.getElementById('walletAddr').innerText=w.account.address; document.getElementById('connectedInfo').style.display='block'; fetch(`https://cardio-backend.vercel.app/api/save-wallet?userId=${userId}&wallet=${w.account.address}`); }
+  else{ connectedWalletAddress=null; document.getElementById('connectedInfo').style.display='none'; }
+});
+async function disconnectWallet(){ await tonConnectUI.disconnect(); }
+function showPage(id,el){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active'); }
+function doMine(){ if(mines<=0) return tg.showAlert("No mines! Watch ad in Task"); mines--; unclaimed+=power; updateUI(); }
+function updateUI(){ document.getElementById('minesLeft').innerText=`${mines}/10`; document.getElementById('unclaimed').innerText=unclaimed.toFixed(2); document.getElementById('minePower').innerText=`${power.toFixed(2)} TON`; document.getElementById('refillTxt').innerText=`${refillDone}/20 today`; document.getElementById('bonusTxt').innerText=`${bonusDone}/100 - $0.05`; }
+function claim(){ if(unclaimed==0) return; wallet+=unclaimed; unclaimed=0; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON"; updateUI(); }
+async function watchRefill(){ const btn=document.getElementById('refillBtn'); btn.innerText="Loading..."; try{ const r=await AdController.show(); if(r.done){ mines=Math.min(10,mines+1); refillDone++; updateUI(); fetch(`https://cardio-backend.vercel.app/api/adsgram-reward?userId=${userId}&type=refill`); } }catch(e){} btn.innerText="Watch"; }
+async function watchAd(){ const btn=document.getElementById('watchBtn'); btn.disabled=true; btn.innerText="Loading..."; try{ const result=await AdController.show(); if(result.done){ bonusDone++; wallet+=0.05; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); updateUI(); fetch(`https://cardio-backend.vercel.app/api/adsgram-reward?userId=${userId}`); } }catch(e){} btn.disabled=false; btn.innerText="Watch"; }
+function deposit(){ if(!connectedWalletAddress) return tg.showAlert("Connect wallet first!"); power=0.15; updateUI(); tg.showAlert("Deposit detected! Power = 0.15 TON"); }
+function withdraw(){ if(!connectedWalletAddress) return tg.showAlert("Connect TON wallet first!"); if(wallet<20) return tg.showAlert(`Min $20, you have $${wallet.toFixed(2)}`); tg.showAlert(`Withdraw $${wallet} to ${connectedWalletAddress.slice(0,8)}...`); }
 function copyRef(){ navigator.clipboard.writeText(document.getElementById('refLink').innerText); tg.showAlert("Copied!"); }
-function connectWallet(){ document.getElementById('walletAddr').innerText="Connected: UQ...1234 (Demo)"; tg.showAlert("Wallet Connected!"); }
-async function loadBalance(){ try{ const res=await fetch(`https://cardio-backend.vercel.app/api/get-balance?userId=${userId}`); const data=await res.json(); if(data.balance!==undefined){ wallet=data.balance; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON"; } }catch(e){} }
+async function loadBalance(){ try{ const res=await fetch(`https://cardio-backend.vercel.app/api/get-balance?userId=${userId}`); const data=await res.json(); if(data.balance!==undefined){ wallet=data.balance; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); } }catch(e){} }
 loadBalance(); updateUI();
 </script>
 </body>
-  </html>
+</html>
