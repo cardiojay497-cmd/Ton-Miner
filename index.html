@@ -6,7 +6,6 @@
   <title>Ton Miner</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.js"></script>
-  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     body{background:#070d1c;color:#fff;font-family:system-ui,sans-serif;padding-bottom:85px}
@@ -15,7 +14,7 @@
     .pill span{color:#0098EA}
     .page{display:none;padding:14px}
     .page.active{display:block}
-    .mine-circle{width:220px;height:220px;margin:26px auto;background:radial-gradient(at 30% 30%,#26407a,#0e1933);border:4px solid #0098EA;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 50px rgba(0,152,234,.35);cursor:pointer;user-select:none;-webkit-tap-highlight-color: transparent;}
+    .mine-circle{width:220px;height:220px;margin:26px auto;background:radial-gradient(at 30% 30%,#26407a,#0e1933);border:4px solid #0098EA;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 0 50px rgba(0,152,234,.35);cursor:pointer;user-select:none;}
     .mine-circle:active{transform:scale(.92)}
     .balance-big{font-size:36px;color:#0098EA;text-align:center;font-weight:800}
     .sub{opacity:.6;text-align:center;font-size:13px;margin-top:4px}
@@ -33,7 +32,6 @@
     .nav-item{text-align:center;font-size:10px;color:#5f7294;flex:1}
     .nav-item.active{color:#0098EA}
     .nav-item b{font-size:20px;display:block}
-    #status{font-size:11px;opacity:.7;margin-top:8px;text-align:center}
   </style>
 </head>
 <body>
@@ -47,32 +45,25 @@
   <div class="balance-big" id="minePower">0.10 TON</div>
   <div class="sub">Tap to mine</div>
   <div id="balance" class="balance-big" style="font-size:28px;margin-top:18px">$0.00</div>
-  <button class="btn" onclick="claim()">Claim to Wallet</button>
-  <p id="status">User: loading...</p>
+  <button class="btn" id="claimBtn">Claim to Wallet</button>
 </div>
 
 <div id="taskPage" class="page">
-  <h3 style="margin-bottom:12px">Tasks</h3>
-  <div class="task"><div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/tonminer_bot1?start=7050695818')">Go</button></div>
-  <div class="task"><div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" onclick="tg.openLink('https://t.me/toncoin')">Go</button></div>
+  <h3 style="margin-bottom:12px">Tasks - Earn TON</h3>
+  <div class="task"><div class="task-left"><div class="icon">📢</div><div><div class="t-title">Follow our channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" id="follow1">Go</button></div>
+  <div class="task"><div class="task-left"><div class="icon">💎</div><div><div class="t-title">Follow Ton Mine channel</div><div class="t-sub">+0.05 TON</div></div></div><button class="t-btn" id="follow2">Go</button></div>
   <div class="task"><div class="task-left"><div class="icon">🎥</div><div><div class="t-title">Watch ads to refill mines</div><div class="t-sub" id="refillTxt">0/20 today</div></div></div><button class="t-btn" id="refillBtn">Watch</button></div>
   <div class="task"><div class="task-left"><div class="icon">💰</div><div><div class="t-title">Bonus ads to receive TON</div><div class="t-sub" id="bonusTxt">0/100 - $0.05</div></div></div><button class="t-btn" id="watchBtn">Watch</button></div>
 </div>
 
 <div id="walletPage" class="page">
   <div class="wallet-card"><div>WALLET</div><h1 id="walletBal">$0.00</h1><div id="walletTon">0.00 TON</div></div>
-  <div id="ton-connect" style="margin:14px 0"></div>
-  <div id="connectedInfo" style="display:none;background:#111c33;border:1px solid #1e315f;border-radius:12px;padding:12px;text-align:center">
-    <div style="font-size:12px;opacity:.6">Connected Wallet</div>
-    <div id="walletAddr" style="font-size:11px;color:#0098EA;margin-top:4px;word-break:break-all"></div>
-    <button class="btn" style="background:#1a2747;padding:10px;font-size:13px" onclick="disconnectWallet()">Disconnect</button>
-  </div>
-  <button class="btn" style="background:#fff;color:#0098EA" onclick="deposit()">Deposit $2 - Boost to 0.15 TON</button>
-  <button class="btn" style="background:#1a2747" onclick="withdraw()">Withdraw Min $20</button>
+  <button class="btn" style="background:#fff;color:#0098EA" id="depositBtn">Deposit $2 - Boost to 0.15 TON</button>
+  <button class="btn" style="background:#1a2747" id="withdrawBtn">Withdraw Min $20</button>
 </div>
 
 <div id="referPage" class="page">
-  <div class="ref-box"><div style="font-size:40px">👥</div><h3>Invite</h3><div class="ref-link" id="refLink"></div><button class="btn" onclick="copyRef()">Copy Link</button></div>
+  <div class="ref-box"><div style="font-size:40px">👥</div><h3>Invite</h3><div class="ref-link" id="refLink">link</div><button class="btn" id="copyBtn">Copy Link</button></div>
 </div>
 
 <div class="nav">
@@ -83,86 +74,26 @@
 </div>
 
 <script>
-const tg = window.Telegram.WebApp; 
-tg.expand();
-
-const userId = tg.initDataUnsafe?.user?.id || "test_user";
-document.getElementById("status").innerText = "User: " + userId;
-document.getElementById("refLink").innerText = `https://t.me/tonminer123_bot?start=${userId}`;
-
-// SAFE ADSGRAM - NO CRASH
-function getAdController(){
-  try{
-    if(window.Adsgram && window.Adsgram.init){
-      return window.Adsgram.init({ blockId: "int-48357" });
-    }
-  }catch(e){ console.log("Adsgram error", e); }
-  return null;
-}
-
+let tg; try{ tg=window.Telegram.WebApp; tg.expand(); }catch(e){ tg={showAlert:(m)=>alert(m), openLink:(u)=>window.open(u), HapticFeedback:{impactOccurred:()=>{}}}; }
+const userId = tg.initDataUnsafe?.user?.id || "7050695818";
+document.getElementById("refLink").innerText=`https://t.me/tonminer123_bot?start=${userId}`;
+function getAd(){ try{ if(window.Adsgram) return window.Adsgram.init({ blockId: "int-48357" }); }catch(e){} return null; }
 let mines=10, unclaimed=0, power=0.1, wallet=0, refillDone=0, bonusDone=0;
-let connectedWalletAddress=null;
-
-const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-  manifestUrl: 'https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json',
-  buttonRootId: 'ton-connect'
-});
-tonConnectUI.onStatusChange(w=>{
-  if(w){ connectedWalletAddress=w.account.address; document.getElementById('walletAddr').innerText=w.account.address; document.getElementById('connectedInfo').style.display='block'; }
-  else{ connectedWalletAddress=null; document.getElementById('connectedInfo').style.display='none'; }
-});
-async function disconnectWallet(){ await tonConnectUI.disconnect(); }
 function showPage(id,el){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); if(el) el.classList.add('active'); }
+window.showPage=showPage;
+function updateUI(){ document.getElementById('minesLeft').innerText=`${mines}/10`; document.getElementById('unclaimed').innerText=unclaimed.toFixed(2); document.getElementById('minePower').innerText=`${power.toFixed(2)} TON`; document.getElementById('refillTxt').innerText=`${refillDone}/20 today`; document.getElementById('bonusTxt').innerText=`${bonusDone}/100 - $0.05`; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON"; }
+function doMine(){ if(mines<=0){ tg.showAlert("No mines! Watch ad in Task"); showPage('taskPage',document.querySelectorAll('.nav-item')[1]); return; } mines--; unclaimed+=power; updateUI(); try{ tg.HapticFeedback.impactOccurred('light'); }catch(e){} }
 
-function doMine(){ 
-  console.log("Mining click", mines);
-  if(mines<=0){ 
-    tg.showAlert("No mines! Go to Task to refill"); 
-    return;
-  } 
-  mines--; 
-  unclaimed+=power; 
-  updateUI(); 
-  try{ tg.HapticFeedback.impactOccurred('light'); }catch(e){}
-}
-function updateUI(){ 
-  document.getElementById('minesLeft').innerText=`${mines}/10`; 
-  document.getElementById('unclaimed').innerText=unclaimed.toFixed(2); 
-  document.getElementById('minePower').innerText=`${power.toFixed(2)} TON`; 
-  document.getElementById('refillTxt').innerText=`${refillDone}/20 today`; 
-  document.getElementById('bonusTxt').innerText=`${bonusDone}/100 - $0.05`; 
-}
-function claim(){ if(unclaimed==0) return tg.showAlert("Mine first!"); wallet+=unclaimed; unclaimed=0; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON"; updateUI(); }
+document.getElementById('mineBtn').onclick=doMine;
+document.getElementById('claimBtn').onclick=function(){ if(unclaimed==0) return tg.showAlert("Mine first!"); wallet+=unclaimed; unclaimed=0; updateUI(); tg.showAlert("Claimed!"); };
+document.getElementById('depositBtn').onclick=function(){ power=0.15; updateUI(); tg.showAlert("Boosted to 0.15 TON!"); };
+document.getElementById('withdrawBtn').onclick=function(){ if(wallet<20) return tg.showAlert("Min $20 needed. You have $"+wallet.toFixed(2)); tg.showAlert("Withdraw $"+wallet.toFixed(2)+" requested!"); };
+document.getElementById('copyBtn').onclick=function(){ navigator.clipboard.writeText(document.getElementById('refLink').innerText); tg.showAlert("Copied!"); };
+document.getElementById('follow1').onclick=function(){ tg.openLink('https://t.me/tonminer_bot1?start=7050695818'); wallet+=0.05; updateUI(); tg.showAlert("+0.05 TON!"); this.innerText="Done"; };
+document.getElementById('follow2').onclick=function(){ tg.openLink('https://t.me/toncoin'); wallet+=0.05; updateUI(); tg.showAlert("+0.05 TON!"); this.innerText="Done"; };
 
-// BIND BUTTONS AFTER LOAD - NO STOCK
-document.getElementById('mineBtn').addEventListener('click', doMine);
-document.getElementById('mineBtn').addEventListener('touchstart', doMine);
-
-document.getElementById('refillBtn').addEventListener('click', async function(){
-  const btn=this; const old=btn.innerText; btn.innerText="Loading..."; btn.disabled=true;
-  try{
-    const AdController = getAdController();
-    if(!AdController){ tg.showAlert("Ad not ready, wait 3 sec"); return; }
-    const r=await AdController.show();
-    if(r && r.done){ mines=Math.min(10,mines+1); refillDone++; updateUI(); tg.showAlert("✅ +1 Mine!"); }
-  }catch(e){ tg.showAlert("No ad now, try later"); }
-  finally{ btn.innerText=old; btn.disabled=false; }
-});
-
-document.getElementById('watchBtn').addEventListener('click', async function(){
-  const btn=this; const old=btn.innerText; btn.innerText="Loading..."; btn.disabled=true;
-  try{
-    const AdController = getAdController();
-    if(!AdController){ tg.showAlert("Ad not ready, wait 3 sec"); return; }
-    const r=await AdController.show();
-    if(r && r.done){ bonusDone++; wallet+=0.05; document.getElementById('balance').innerText="$"+wallet.toFixed(2); document.getElementById('walletBal').innerText="$"+wallet.toFixed(2); document.getElementById('walletTon').innerText=wallet.toFixed(2)+" TON"; updateUI(); tg.showAlert("✅ +$0.05!"); }
-  }catch(e){ tg.showAlert("No ad now, try later"); }
-  finally{ btn.innerText=old; btn.disabled=false; }
-});
-
-function deposit(){ if(!connectedWalletAddress) return tg.showAlert("Connect wallet first!"); power=0.15; updateUI(); tg.showAlert("Power = 0.15 TON"); }
-function withdraw(){ if(!connectedWalletAddress) return tg.showAlert("Connect TON wallet first!"); if(wallet<20) return tg.showAlert(`Min $20, you have $${wallet.toFixed(2)}`); tg.showAlert(`Withdraw $${wallet} to ${connectedWalletAddress.slice(0,8)}...`); }
-function copyRef(){ navigator.clipboard.writeText(document.getElementById('refLink').innerText); tg.showAlert("Copied!"); }
+document.getElementById('refillBtn').onclick=async function(){ let btn=this, txt=btn.innerText; btn.innerText="Loading..."; btn.disabled=true; try{ let ad=getAd(); if(!ad){ tg.showAlert("Ads loading, try again"); return; } let r=await ad.show(); if(r&&r.done){ mines=Math.min(10,mines+1); refillDone++; updateUI(); tg.showAlert("+1 Mine!"); } }catch(e){ tg.showAlert("No ad now, try later"); } finally{ btn.innerText=txt; btn.disabled=false; } };
+document.getElementById('watchBtn').onclick=async function(){ let btn=this, txt=btn.innerText; btn.innerText="Loading..."; btn.disabled=true; try{ let ad=getAd(); if(!ad){ tg.showAlert("Ads loading, try again"); return; } let r=await ad.show(); if(r&&r.done){ bonusDone++; wallet+=0.05; updateUI(); tg.showAlert("+$0.05!"); } }catch(e){ tg.showAlert("No ad now, try later"); } finally{ btn.innerText=txt; btn.disabled=false; } };
 
 updateUI();
 </script>
