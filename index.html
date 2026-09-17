@@ -1,80 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cardio Rewards</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-  <style>
-    body { background:#000; color:#fff; font-family:sans-serif; text-align:center; padding:20px; }
-    button { background:#00ff88; color:#000; padding:15px 30px; border:none; border-radius:12px; font-size:18px; font-weight:bold; cursor:pointer; margin-top:20px; }
-    button:disabled { background:#444; color:#888; }
-    #balance { font-size:32px; margin:20px 0; color:#00ff88; }
-  </style>
-</head>
-<body>
-  <h2>💰 Watch & Earn</h2>
-  <div id="balance">$0.00</div>
-  <p>Watch ad to earn $0.05</p>
-  
-  <button id="watchBtn" onclick="watchAd()">▶️ Watch Ad</button>
-  <p id="status"></p>
-
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-  
-  const userId = tg.initDataUnsafe?.user?.id || "test_user";
-  document.getElementById("status").innerText = "User: " + userId;
-
-  // Initialize Adsgram with your Block ID 48303
-  const AdController = window.Adsgram.init({ blockId: "48303" });
-
-  async function watchAd() {
-    const btn = document.getElementById("watchBtn");
-    btn.disabled = true;
-    btn.innerText = "Loading ad...";
-    
-    try {
-      const result = await AdController.show();
-      
-      if (result.done) {
-        document.getElementById("status").innerText = "✅ Ad watched! Adding $0.05...";
-        
-        // Adsgram go automatically call your reward URL for backend:
-        // https://cardio-backend.vercel.app/api/adsgram-reward?userId=[userId]
-        // But we go also confirm for frontend
-        setTimeout(() => {
-          document.getElementById("status").innerText = "🎉 $0.05 added! Refresh to see balance.";
-          btn.disabled = false;
-          btn.innerText = "▶️ Watch Another Ad";
-        }, 2000);
-        
-      } else {
-        document.getElementById("status").innerText = "❌ You no finish the ad";
-        btn.disabled = false;
-        btn.innerText = "▶️ Try Again";
-      }
-    } catch (e) {
-      document.getElementById("status").innerText = "Error: " + JSON.stringify(e);
-      btn.disabled = false;
-      btn.innerText = "▶️ Watch Ad";
-    }
-  }
-
-  // Load balance from Supabase via your backend
-  async function loadBalance() {
-    try {
-      const res = await fetch(`https://cardio-backend.vercel.app/api/get-balance?userId=${userId}`);
-      const data = await res.json();
-      if(data.balance !== undefined) {
-        document.getElementById("balance").innerText = "$" + data.balance.toFixed(2);
-      }
-    } catch(e) {}
-  }
-  
-  loadBalance();
-</script>
-</body>
-</html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CARDIO TON Wallet</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#0a0e1a;color:#fff;min-height:100vh;padding-bottom:90px}
+.header{background:#111827;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1f2937}
+.header h1{font-size:16px;letter-spacing:1px}
+.balance-card{margin:16px;background:linear-gradient(135deg,#0098EA 0%,#0066cc 100%);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.balance-card::after{content:"";position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:rgba(255,255,255,0.1);border-radius:50%}
+.badge{background:rgba(0,0,0,0.2);display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;margin-bottom:10px}
+.amount{font-size:36px;font-weight:700;display:flex;align-items:center;gap:8px}
+.amount span{font-size:16px;opacity:0.8;font-weight:400}
+.stats{margin:0 16px;background:#151a28;border-radius:14px;display:flex;padding:14px 0;border:1px solid #1f2937}
+.stat{flex:1;text-align:center;border-right:1px solid #1f2937}
+.stat:last-child{border:none}
+.stat b{display:block;font-size:18px;color:#0098EA}
+.stat p{font-size:11px;opacity:0.6;margin-top:2px}
+.actions{margin:16px;display:flex;gap:12px}
+.btn{flex:1;padding:14px;border-radius:12px;border:none;font-weight:600;cursor:pointer;font-size:14px}
+.btn-primary{background:#0098EA;color:#fff}
+.btn-dark{background:#1f2937;color:#fff;border:1px solid #2d3748}
+.card{margin:12px 16px;background:#151a28;border-radius:16px;padding:16px;display:flex;justify-content:space-between;align-items:center;border:1px solid #1f2937}
+.card-left{display:flex;gap:12px;align-items:center}
+.icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.icon-orange{background:#ff8c00} .icon-blue{background:#0098EA} .icon-green{background:#10b981}
+.card h3{font-size:14px} .card p{font-size:12px;color:#10b981;margin-top:2px}
+.card small{font-size:11px;opacity:0.5}
+.open-btn{background:#0098EA;color:#fff;border:none;padding:8px 18px;border-radius:20px;font-weight:600;cursor:pointer}
+.section-title{margin:20px 16px 8px;font-size:12px;opacity:0.6;letter-spacing:1px;display:flex;justify-content:space-between}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:#111827;border-top:1px solid #1f2937;display:flex;padding:8px 0}
+.tab{flex:1;text-align:center;padding:8px;font-size:11px;opacity:0.5;cursor:pointer}
+.tab.active{opacity:1;color:#0098EA}
+.tab b{font-size:20px;display:block}
+.page{display:none} .page.active{display:block}
+.ref-card{margin:16px;background:linear-gradient(135deg,#0098EA,#0055a5);border-radius:20px;padding:20px;text-align:left}
+.ref-card h2{font-size:20px;margin-bottom:6px}
+.copy-box{background
