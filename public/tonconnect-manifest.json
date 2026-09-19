@@ -1,5 +1,7 @@
 {
-  "url": "https://cardio-backend.vercel.app",
+  "url": "https://ton-miner.netlify.app",
   "name": "Ton Miner",
-  "iconUrl": "https://ton.org/download/ton_symbol.png"
+  "iconUrl": "https://ton-miner.netlify.app/icon.png",
+  "termsOfUseUrl": "https://ton-miner.netlify.app/terms",
+  "privacyPolicyUrl": "https://ton-miner.netlify.app/privacy"
 }
